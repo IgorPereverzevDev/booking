@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.MonoSink;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -22,18 +23,19 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Flux<Booking> getAvailableRooms() {
-        return bookingRepository.findAvailableRooms();
+    public Flux<BookingDto> getAvailableRooms() {
+        return bookingRepository.findAll().map(r -> modelMapper.map(r, BookingDto.class));
     }
 
     @Override
-    public Flux<Booking> getBookingRooms() {
-        return bookingRepository.findAll();
+    public Flux<BookingDto> getBookingRooms() {
+        return bookingRepository.findAvailableRooms().map(r -> modelMapper.map(r, BookingDto.class));
     }
 
     @Override
-    public Mono<Booking> addBooking(BookingDto bookingDto) {
-        return bookingRepository.save(modelMapper.map(bookingDto, Booking.class));
+    public Mono<BookingDto> addBooking(BookingDto bookingDto) {
+        Mono<Booking> room = bookingRepository.save(modelMapper.map(bookingDto, Booking.class));
+        return Mono.create(MonoSink::success);
     }
 
     @Override

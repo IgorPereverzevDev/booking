@@ -3,13 +3,12 @@ package com.booking.booking.controller;
 import com.booking.booking.dto.BookingDto;
 import com.booking.booking.service.BookingService;
 import com.booking.booking.service.BookingServiceImpl;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-
-import java.time.Duration;
-import java.util.stream.Stream;
+import reactor.core.publisher.Mono;
 
 @RestController
 public class BookingController {
@@ -20,26 +19,24 @@ public class BookingController {
         this.employeeService = employeeService;
     }
 
-    Flux<BookingDto> greet(RoomRequest request) {
-        return Flux.fromStream(Stream.generate(() -> new BookingDto()))
-                .delayElements(Duration.ofSeconds(1));
+    @GetMapping(value = {"/rooms"})
+    Flux<BookingDto> getAvailableRooms() {
+        return employeeService.getAvailableRooms();
     }
 
-    Flux<BookingDto> greet(RoomRequest request) {
-        return Flux.fromStream(Stream.generate(() -> new BookingDto()))
-                .delayElements(Duration.ofSeconds(1));
+    @PostMapping(value = {"/booking"})
+    Mono<BookingDto> createBooking(BookingDto request) {
+        return employeeService.addBooking(request);
     }
 
-    @RequestMapping(value = { "/create", "/" }, method = RequestMethod.POST)
-    Flux<BookingDto> (BookingDto request) {
-        return Flux.fromStream(Stream.generate(() -> new BookingDto()))
-                .delayElements(Duration.ofSeconds(1));
+    @GetMapping(value = {"/bookings"})
+    Flux<BookingDto> getBookings() {
+        return employeeService.getBookingRooms();
     }
 
-    Flux<BookingDto> greet(RoomRequest request) {
-        return Flux.fromStream(Stream.generate(() -> new BookingDto()))
-                .delayElements(Duration.ofSeconds(1));
+    @DeleteMapping(value = {"/bookings/id"})
+    Mono<Void> cancelBooking(BookingDto request) {
+        return employeeService.deleteBooking(request.getId());
     }
-
 
 }
