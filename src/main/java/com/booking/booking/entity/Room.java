@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public
-class Room {
+public class Room {
     private String id;
     private Type type;
 }
