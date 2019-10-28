@@ -8,7 +8,11 @@ import reactor.core.publisher.Flux;
 
 public interface BookingRepository extends ReactiveCrudRepository<Booking, Long> {
 
-    @Query("SELECT ")
+    @Query("SELECT * FROM room JOIN booking ON room.id = booking.id")
+    Flux<Booking> findBookingRooms();
+
+    @Query("SELECT * FROM room AS r WHERE r.id NOT IN(SELECT m.room_id FROM booking AS b\n" +
+            " JOIN booking_map AS m ON b.id = m.id")
     Flux<Booking> findAvailableRooms();
 
 }
